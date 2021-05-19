@@ -1,0 +1,31 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "todo-tree.highlights.customHighlight": {
+    "NOTE": {
+      "icon": "check",
+      "type": "line"
+    },
+    "WANNADO": {
+      "icon": "check",
+      "type": "line"
+    },
+  },
+  "python.pythonPath": "/Users/fuyutarow/.pyenv/shims/python",
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": [
+    "-l",
+    "100"
+  ],
+  "python.sortImports.args": [
+    "-rc",
+    "--atomic"
+  ],
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+}
