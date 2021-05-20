@@ -206,8 +206,9 @@ const App: React.FC<{
     setOrderBy(property);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    alert(name);
+  const handleClick = (event: React.MouseEvent<unknown>, full_name: string) => {
+    const url = `https://github.com/${full_name}`;
+    chrome.tabs.create({ url });
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
