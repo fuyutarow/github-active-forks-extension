@@ -13,7 +13,7 @@ jobs:
       - name: Set envs
         id: set_envs
         run: |
-          echo ::set-output name=appname::github-readme-stats-extension
+          echo ::set-output name=appname::github-active-forks-extension
           echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
         env:
           GITHUB_REF: ${{ github.ref }}
