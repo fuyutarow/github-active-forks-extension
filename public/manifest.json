@@ -1,8 +1,8 @@
 {
-  "name": "github-active-forks-extension",
-  "description": "github-active-fork-extension",
+  "name": "Github Active Forks Extension",
+  "description": "A Chrome extension to help you discover active forks",
   "manifest_version": 2,
-  "version": "0.2021.3",
+  "version": "0.2021.4",
   "icons": {
     "16": "icons/16x16.png",
     "48": "icons/48x48.png",
