@@ -8,7 +8,7 @@ import './App.css';
 import { Fork } from './models';
 import Table from './components/Table';
 
-const App = () => {
+const App: React.FC = () => {
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [repo, setRepo] = useState<string|null>(null);
   // const [repoUrl, setRepoUrl] = useState<string|null>(null);
@@ -30,24 +30,27 @@ const App = () => {
     }
   }, [currentUrl, repo]);
 
-  const fetchAndShow = async() => {
-    const response = await fetch(
-      `https://api.github.com/repos/${repo}/forks?sort=stargazers&per_page=100`
-    );
-    // .catch(e => alert(e));
-    if (!response.ok) throw Error(response.statusText);
-    const data = await response.json();
-    console.log(data);
+  useEffect(() => {
+    const unlisten = async () => {
+      const response = await fetch(
+        `https://api.github.com/repos/${repo}/forks?sort=stargazers&per_page=100`
+      );
+      // .catch(e => alert(e));
+      if (!response.ok) throw Error(response.statusText);
+      const data = await response.json();
+      console.log(data);
 
-    const forks = data.map((fork: any) => {
-      return {
-        ...fork,
-        ownerName: fork.owner ? fork.owner.login : 'Unknown',
-      } as Fork;
-    });
+      const forks = data.map((fork: any) => {
+        return {
+          ...fork,
+          ownerName: fork.owner ? fork.owner.login : 'Unknown',
+        } as Fork;
+      });
 
-    setForks(forks);
-  };
+      setForks(forks);
+    };
+    unlisten();
+  }, [repo, forks]);
 
   return (
     <div className="App">
@@ -56,9 +59,6 @@ const App = () => {
         paddingTop: 20,
         paddingBottom: 20,
       }}>
-        <div>
-          <button onClick={fetchAndShow}>fetch</button>
-        </div>
         <Table {...{
           originRepo: repo ?? '',
           rows: forks,
