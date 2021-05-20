@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
 
 import { name as appName, version } from '../package.json';
 
@@ -53,15 +52,10 @@ const App = () => {
   return (
     <div className="App">
       <Container className="App-container" style={{
+        backgroundColor: '#ECEFF4',
         paddingTop: 20,
         paddingBottom: 20,
       }}>
-        <div style={{
-          fontSize: 12,
-          color: 'gray',
-        }}>
-          {repo ?? ''}
-        </div>
         <div>
           <button onClick={fetchAndShow}>fetch</button>
         </div>
@@ -69,6 +63,14 @@ const App = () => {
           originRepo: repo ?? '',
           rows: forks,
         }} />
+        <div style={{
+          fontSize: 12,
+          color: 'gray',
+        }}>
+          <a href={'https://github.com/fuyutarow/github-active-forks-extension'}>
+            {appName} v{version}
+          </a>
+        </div>
       </Container>
     </div>
   );
