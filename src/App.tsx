@@ -20,12 +20,37 @@ const toBG: { [theme: string]: string } = {
   'vue': '#ECEFF4',
 };
 
+interface Fork {
+  // repoUrl: string,
+  ownerName: string
+  full_name: string
+  default_branch: string
+  stargazers_count: number
+  forks_count: number
+  open_issues_count: string
+  size: number
+  pushed_at: string
+}
+
+const ForkShow: React.FC<{fork: Fork}> = ({ fork }) => {
+  return (
+    <div>
+      fork
+      <div>
+        {fork.full_name}
+      </div>
+      <div>
+        {fork.size}
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
-  const [username, setUsername] = useState<string | null>(null);
-  // const [theme, setTheme] = useState('solarized-dark');
-  const [theme, setTheme] = useState('vue');
-  const scale = 0.9;
+  const [repo, setRepo] = useState<string|null>(null);
+  // const [repoUrl, setRepoUrl] = useState<string|null>(null);
+  const [forks, setForks] = useState<Fork[]>([]);
 
   useEffect(() => {
     chrome.tabs.query({ 'active': true, 'lastFocusedWindow': true }, tabs => {
@@ -38,50 +63,57 @@ const App = () => {
   useEffect(() => {
     if (currentUrl) {
       const parser = new URL(currentUrl);
-      const username = parser.pathname.split('/')[1];
-      setUsername(username);
+      const repo = parser.pathname.split('/').slice(1, 3).join('/').replace(/\.git$/, '');
+      const repoUrl = `https://github.com/${repo}`;
+      setRepo(repo);
+      // setRepoUrl(repoUrl);
     }
-  }, [currentUrl, username]);
+  }, [currentUrl, repo]);
+
+  const fetchAndShow = async() => {
+    const response = await fetch(
+      `https://api.github.com/repos/${repo}/forks?sort=stargazers&per_page=100`
+    );
+    // .catch(e => alert(e));
+    if (!response.ok) throw Error(response.statusText);
+    const data = await response.json();
+    console.log(data);
+
+    const forks = data.map((fork: any) => {
+      return {
+        ...fork,
+        ownerName: fork.owner ? fork.owner.login : 'Unknown',
+      } as Fork;
+    });
+
+    setForks(forks);
+  };
 
   return (
     <div className="App">
       <Container className="App-container" style={{
-        backgroundColor: toBG[theme],
         paddingTop: 20,
         paddingBottom: 20,
       }}>
-        {
-          username && (
-            <Grid container justify="flex-start" spacing={1}>
-              <Grid item xs={12}>
-                <img {...{
-                  height: 195 * scale,
-                  src: `https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&count_private=true&theme=${theme}`,
-                }} />
-              </Grid>
-              <Grid item xs={12}>
-                <img {...{
-                  height: 165 * scale,
-                  src: `https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=${theme}`,
-                }} />
-              </Grid>
-              <Grid item xs={12}>
-                <img {...{
-                  height: 180 * scale,
-                  src: `https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=${username}&theme=${toProfile[theme]}`,
-                }} />
-              </Grid>
-            </Grid>
-          )
-        }
+        ===
         <div style={{
           fontSize: 12,
           color: 'gray',
         }}>
-          <a href={'https://github.com/fuyutarow/github-readme-stats-extension'}>
-            {appName} v{version}
-          </a>
+          {repo ?? ''}
         </div>
+        <div>
+          <button onClick={fetchAndShow}>fetch</button>
+        </div>
+        <div>{forks.length}</div>
+        <div>
+          {
+            forks.slice(0, 5).map(fork => {
+              return <ForkShow fork={fork} />;
+            })
+          }
+        </div>
+        ===
       </Container>
     </div>
   );

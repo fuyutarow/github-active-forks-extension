@@ -18,6 +18,7 @@
   "permissions": [
     "https://github.com/*",
     "https://gist.github.com/*",
-    "activeTab"
+    "activeTab",
+    "background"
   ]
 }
