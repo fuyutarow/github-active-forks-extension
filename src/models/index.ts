@@ -1,13 +1,13 @@
 
 export interface Fork {
-  // repoUrl: string,
-  name: string
-  ownerName: string
   full_name: string
-  default_branch: string
   stargazers_count: number
+  watchers_count: number
   forks_count: number
-  open_issues_count: string
+  open_issues_count: number
   size: number
   pushed_at: string
+  ownerName: string
+  name: string
+  default_branch: string
 }

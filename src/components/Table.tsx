@@ -19,6 +19,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import LaunchIcon from '@material-ui/icons/Launch';
+import * as dayjs from 'dayjs';
+import * as relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 
 import { Fork } from '../models';
 
@@ -63,18 +67,18 @@ interface HeadCell {
 }
 
 const headCells: HeadCell[] = [
-  { id: 'full_name', numeric: false, disablePadding: true, label: 'Repo' },
-  { id: 'stargazers_count', numeric: true, disablePadding: false, label: 'Stars' },
-  { id: 'forks_count', numeric: true, disablePadding: false, label: 'Fokrs' },
-  { id: 'open_issues_count', numeric: true, disablePadding: false, label: 'Open Issues' },
-  { id: 'size', numeric: true, disablePadding: false, label: 'Size' },
+  { label: 'Repo', id: 'full_name', numeric: false, disablePadding: true },
+  { label: 'Watch', id: 'watchers_count', numeric: true, disablePadding: true },
+  { label: 'Star', id: 'stargazers_count', numeric: true, disablePadding: true },
+  { label: 'Fork', id: 'forks_count', numeric: true, disablePadding: true },
+  { label: 'Open Issues', id: 'open_issues_count', numeric: true, disablePadding: true },
+  { label: 'Size', id: 'size', numeric: true, disablePadding: true },
+  { label: 'Last Push', id: 'pushed_at', numeric: false, disablePadding: false },
 ];
 
 interface EnhancedTableProps {
   classes: ReturnType<typeof useStyles>;
-  // numSelected: number;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
-  // onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
   rowCount: number;
@@ -89,20 +93,18 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          {/* <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all desserts' }}
-          /> */}
-        </TableCell>
+        <TableCell padding="checkbox" />
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
+            component="th"
+            scope="row"
+            style={{
+              width: headCell.numeric ? 10 : 100,
+            }}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -145,7 +147,7 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const EnhancedTableToolbar: React.FC<{originRepo: string}> = ({ originRepo }) => {
+const EnhancedTableToolbar: React.FC<{ originRepo: string }> = ({ originRepo }) => {
   const classes = useToolbarStyles();
 
   return (
@@ -222,7 +224,7 @@ const App: React.FC<{
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar originRepo={originRepo}/>
+        <EnhancedTableToolbar originRepo={originRepo} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -240,30 +242,38 @@ const App: React.FC<{
               rowCount={rows.length}
             />
             <TableBody>
-              {stableSort(rows as any, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
+              {
+                stableSort(rows as any, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.full_name as any)}
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.full_name}
-                    >
-                      <TableCell padding="checkbox" />
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.full_name}
-                      </TableCell>
-                      <TableCell align="right">{row.stargazers_count}</TableCell>
-                      <TableCell align="right">{row.forks_count}</TableCell>
-                      <TableCell align="right">{row.open_issues_count}</TableCell>
-                      <TableCell align="right">{row.size}</TableCell>
-                    </TableRow>
-                  );
-                })}
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.full_name as any)}
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.full_name}
+                      >
+                        <TableCell padding="checkbox">
+                          <IconButton>
+                            <LaunchIcon fontSize="small" />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                          {row.full_name}
+                        </TableCell>
+                        <TableCell component="th" scope="row" align="right" padding="none" style={{ width: 10 }} >{row.watchers_count}</TableCell>
+                        <TableCell component="th" scope="row" align="right" padding="none" style={{ width: 10 }}>{row.stargazers_count}</TableCell>
+                        <TableCell component="th" scope="row" align="right" padding="none" style={{ width: 10 }} >{row.forks_count}</TableCell>
+                        <TableCell component="th" scope="row" align="right" padding="none" style={{ width: 10 }} >{row.open_issues_count}</TableCell>
+                        <TableCell component="th" scope="row" align="right" padding="none" style={{ width: 10 }} >{row.size}</TableCell>
+                        <TableCell>{dayjs(row.pushed_at).fromNow()}</TableCell>
+                      </TableRow>
+                    );
+                  })
+              }
               {emptyRows > 0 && (
                 <TableRow style={{ height: 32 * emptyRows }}>
                   <TableCell colSpan={6} />
