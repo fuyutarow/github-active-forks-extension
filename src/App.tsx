@@ -8,6 +8,8 @@ import './App.css';
 import { Fork } from './models';
 import Table from './components/Table';
 
+import { Button } from '@material-ui/core';
+
 const App: React.FC = () => {
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [repo, setRepo] = useState<string|null>(null);
@@ -59,26 +61,32 @@ const App: React.FC = () => {
         paddingTop: 20,
         paddingBottom: 20,
       }}>
-        <Table {...{
-          originRepo: repo ?? '',
-          rows: forks,
-        }} />
-        <div style={{
-          fontSize: 12,
-          color: 'gray',
-        }}>
-          <a
-            href={
-              'https://twitter.com/bonbonnice1'
-            }
-            onClick={(e: any) => {
-              if (e.target.href !== undefined){
-                chrome.tabs.create({ url: e.target.href });
-              }
-            }}>
-            {appName} v{version}
-          </a>
-        </div>
+        <Button
+          children="btn1"
+          onClick={async() => {
+            chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+              chrome.tabs.sendMessage(
+                // @ts-ignore
+                tabs[0].id,
+                JSON.stringify({ action: 1 }),
+                (res) => { }
+              );
+            });
+          }}
+        />
+        <Button
+          children="btn2"
+          onClick={async() => {
+            chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+              chrome.tabs.sendMessage(
+                // @ts-ignore
+                tabs[0].id,
+                JSON.stringify({ action: 2 }),
+                (res) => { }
+              );
+            });
+          }}
+        />
       </Container>
     </div>
   );
