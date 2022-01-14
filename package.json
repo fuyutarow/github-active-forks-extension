@@ -1,7 +1,7 @@
 {
-  "name": "github-active-forks-extension",
+  "name": "Twitter-Hack",
   "description": "github-active-fork-extension",
-  "version": "0.2021.7",
+  "version": "0.2021.9",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",

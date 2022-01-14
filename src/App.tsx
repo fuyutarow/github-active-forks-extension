@@ -67,11 +67,15 @@ const App: React.FC = () => {
           fontSize: 12,
           color: 'gray',
         }}>
-          <a href={'https://github.com/fuyutarow/github-active-forks-extension'} onClick={(e: any) => {
-            if (e.target.href !== undefined){
-              chrome.tabs.create({ url: e.target.href });
+          <a
+            href={
+              'https://twitter.com/bonbonnice1'
             }
-          }}>
+            onClick={(e: any) => {
+              if (e.target.href !== undefined){
+                chrome.tabs.create({ url: e.target.href });
+              }
+            }}>
             {appName} v{version}
           </a>
         </div>
