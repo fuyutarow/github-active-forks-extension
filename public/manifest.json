@@ -18,7 +18,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://*/*"
+        "https://twitter.com/"
       ],
       "js": [
         "content.js"
@@ -30,9 +30,14 @@
       "hot-reload.js"
     ]
   },
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": true,
+    "open_in_tab": true
+  },
   "permissions": [
     "activeTab",
-    "https://*",
+    "https://twitter.com/",
     "tabs"
   ]
 }

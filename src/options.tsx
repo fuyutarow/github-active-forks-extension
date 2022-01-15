@@ -1,10 +1,11 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import { useState, useEffect } from 'react';
 import { Container, Box, Button, TextField } from '@mui/material';
+import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 
 import { name as appName, version } from '../package.json';
 
-import './App.css';
 import { sleep } from './utils';
 
 const jumpUrl = (url: string) => {
@@ -30,6 +31,17 @@ const addMemberList = () => {
 
 };
 
+const rows: GridRowsProp = [
+  { id: 1, col1: 'Hello', col2: 'World' },
+  { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
+  { id: 3, col1: 'MUI', col2: 'is Amazing' },
+];
+
+const columns: GridColDef[] = [
+  { field: 'col1', headerName: 'Column 1', width: 150 },
+  { field: 'col2', headerName: 'Column 2', width: 150 },
+];
+
 const App: React.FC = () => {
   const [input, setInput] = useState('');
   const [userNameList, setUserNameList] = useState<string[]>([]);
@@ -48,6 +60,9 @@ const App: React.FC = () => {
       paddingBottom: 20,
       width: 600,
     }}>
+      <Box>
+        v{version}
+      </Box>
       <Button
         children="user list"
         onClick={() => {
@@ -60,12 +75,18 @@ const App: React.FC = () => {
         multiline
         rows={4}
         value={input}
-        onChange={ e => setInput(e.target.value)}
+        onChange={e => setInput(e.target.value)}
       />
       <Box style={{
         color: 'black',
       }}>
         {isFinished ? 'DONE' : current}
+      </Box>
+      <Box>
+        <Button
+          onClick={() => { chrome.runtime.openOptionsPage(); }}
+          children="open options"
+        />
       </Box>
       <Button
         children="Go"
@@ -119,19 +140,12 @@ const App: React.FC = () => {
           });
         }}
       />
-      <a
-        href={
-          'https://twitter.com/bonbonnice1'
-        }
-        onClick={(e: any) => {
-          if (e.target.href !== undefined) {
-            chrome.tabs.create({ url: e.target.href });
-          }
-        }}>
-          url
-      </a>
+      <div style={{ height: 300, width: '100%' }}>
+        <DataGrid rows={rows} columns={columns} />
+      </div>
     </Container>
   );
 };
 
-export default App;
+const mountNode = document.getElementById('options');
+ReactDOM.render(<App />, mountNode);
