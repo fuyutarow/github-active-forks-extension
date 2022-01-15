@@ -43,6 +43,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-hot-loader": "^4.13.0",
-    "react-use": "^17.2.3"
+    "react-use": "^17.2.3",
+    "usehooks-ts": "^2.2.1"
   }
 }
